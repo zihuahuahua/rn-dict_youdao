@@ -10,7 +10,9 @@ class index extends Component {
     this.state = {
       showList: false,
       showDetail: false,
+      showDelete: false,
       dataSource: null,
+      value: '',
       notFound: false,
       wordDetail: []
     }
@@ -40,13 +42,12 @@ class index extends Component {
       }
     }
   };
-  // 
+  // 单词详情
   getWordsDetail = async (value) => {
     let params = {
       jsonversion: 2,
     }
     const res = await getWordDetail({ ...params, q: value });
-    console.log(res, 'resDatata')
     if (!!res.data) {
       this.setState({
         wordDetail: res.data,
@@ -54,10 +55,24 @@ class index extends Component {
       })
     }
   };
+  goback() {
+    const { navigation } = this.props
+    console.log(navigation, 'navigation')
+  }
+  deleteText() {
+    this.setState({
+      value: '',
+      showList: false,
+      showDelete: false,
+      showDelete: false
+    })
+  }
   onPressWord(data) {
     this.getWordsDetail(data.entry)
     this.setState({
       showList: false,
+      showDetail: true,
+      showDelete: true
     })
   }
   renderItem = ({ item }) => (
@@ -69,10 +84,19 @@ class index extends Component {
       </View>
     </TouchableHighlight>
   );
+  focusInput() {
+    if (this.state.value !== '') {
+      this.setState({
+        showDelete: true
+      })
+    }
+  }
   changeTxt(val) {
-    // this.setState({
-    //   value: val
-    // })
+    this.setState({
+      showDetail: false,
+      showDelete: true,
+      value: val
+    })
     if (val !== '') {
       this.setState({
         showList: true
@@ -85,17 +109,30 @@ class index extends Component {
     }
   }
   render() {
-    const { dataSource, showList, notFound, wordDetail,showDetail } = this.state
+    const { dataSource, showList, notFound, wordDetail, showDetail, value, showDelete } = this.state
     return (
       <View style={styles.container}>
         <View style={styles.searchBox}>
-          <Image source={require('../../images/back.png')} style={styles.goBack}></Image>
-          <TextInput
-            placeholder='在此输入单词或句子'
-            style={styles.searchInput}
-            onChangeText={(value) => this.changeTxt(value)}
-            placeholderTextColor={'#9c9c9c'}
-          />
+          <View style={{ flexDirection: 'row', alignItems: 'center' }}>
+            <TouchableHighlight onPress={this.goback}>
+              <Image source={require('../../images/back.png')} style={styles.goBack}></Image>
+            </TouchableHighlight>
+            <TextInput
+              placeholder='在此输入单词或句子'
+              style={styles.searchInput}
+              onChangeText={(value) => this.changeTxt(value)}
+              placeholderTextColor={'#9c9c9c'}
+              value={value}
+              onFocus={this.focusInput.bind(this)}
+            />
+          </View>
+          <TouchableHighlight onPress={this.deleteText.bind(this)} underlayColor={'rgba(0,0,0,0)'}>
+            <View>
+              {showDelete &&
+                <Image source={require('../../images/delete.png')} style={styles.deleteBtn}></Image>
+              }
+            </View>
+          </TouchableHighlight>
         </View>
         {/* <View style={styles.scrollView}>
           <ScrollView horizontal={true} >
@@ -132,7 +169,6 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     paddingTop: 10,
-    // justifyContent: 'center',
     alignItems: 'center',
     backgroundColor: '#F5FCFF',
   },
@@ -141,6 +177,7 @@ const styles = StyleSheet.create({
     width: MainWidth * 0.9,
     paddingHorizontal: 15,
     flexDirection: 'row',
+    justifyContent: 'space-between',
     alignItems: 'center',
     borderWidth: 1,
     borderColor: '#eeeeee',
@@ -154,6 +191,8 @@ const styles = StyleSheet.create({
   },
   searchInput: {
     width: 280
+  },
+  deleteBtn: {
   },
   listView: {
     width: MainWidth * 0.9,
@@ -172,10 +211,8 @@ const styles = StyleSheet.create({
     justifyContent: 'space-around'
   },
   word: {
-    // width: 80
   },
   explain: {
-    // width:350,
     flex: 1,
     color: '#9c9c9c',
     marginLeft: 20,
@@ -184,7 +221,6 @@ const styles = StyleSheet.create({
     flex: 0,
     width: 60,
     height: 26,
-    // lineHeight: 26,
     justifyContent: 'center',
     marginLeft: 20,
     borderRadius: 20,
@@ -192,6 +228,9 @@ const styles = StyleSheet.create({
     borderColor: '#eee',
     textAlign: 'center',
     color: '#dddddd'
+  },
+  detailBox: {
+    width: MainWidth * 0.9
   }
 })
 
