@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { Dimensions, View, Text, TextInput, StyleSheet, Image, ScrollView, FlatList, TouchableHighlight } from 'react-native';
+import { Dimensions, View, Text, StyleSheet, Image,ScrollView } from 'react-native';
 
 import ScrollableTabView from 'react-native-scrollable-tab-view';
 import TabBar from 'react-native-underline-tabbar';
@@ -34,16 +34,17 @@ class wordCard extends Component {
   }
 
   render() {
-    const { simple, ec, pic_dict, blng_sents_part, auth_sents_part, media_sents_part, longman, collins } = this.props.item
+    const { simple, ec, pic_dict, blng_sents_part, longman, collins, wikipedia_digest } = this.props.item
     const { swiperArr } = this.state
-    if(!!longman.wordList[0].Entry.Sense){
-      var longwen = longman.wordList[0].Entry.Sense[0]
+    if (!!longman) {
+      var longwenSense = longman.wordList[0].Entry.Sense[0]
+      var longwenHead = longman.wordList[0].Entry.Head[0]
     }
-    if(!!collins.collins_entries[0].entries){
+    if (!!collins) {
       var KSL = collins.collins_entries[0].entries.entry[0].tran_entry[0]
     }
     return (
-      <View>
+      <ScrollView>
         <View style={styles.top}>
           <View style={{ width: MainWidth * 0.6 }}>
             <Text style={styles.word}>{simple.query}</Text>
@@ -108,20 +109,34 @@ class wordCard extends Component {
                                       <Text style={{ marginTop: 8 }}>{i['sentence-translation']}</Text>
                                     </View>)
                                 })}
-
                               </View>
                             }
                           </View>
                         }
-                      </View>}
-                    {i == '朗文' && !!longman.wordList[0].Entry.Sense && 
+                        {!!wikipedia_digest &&
+                          <View style={styles.wikiBox}>
+                            <Text style={{ color: '#777777', fontWeight: '700' }}>百科</Text>
+                            <View>
+                              <Text style={{ color: '#BE3030', fontSize: 18, marginRight: 10 }}>{wikipedia_digest.summarys[0].key}</Text>
+                              <Text>{wikipedia_digest.summarys[0].summary}</Text>
+                            </View>
+                          </View>
+                        }
+                      </View>
+                    }
+                    {i == '朗文' && !!longman.wordList[0].Entry.Sense &&
                       <View style={styles.langwenBox}>
+                        <View style={styles.HeadLW}>
+                          <Text style={{ color: '#BE3030', fontSize: 18, marginRight: 10 }}>{longwenHead.HWD[0]}</Text>
+                          <Text>/{longwenHead.PronCodes[0].PRON}/</Text>
+                          <Text>英 /{longwenHead.PronCodes[0].PRONKK}/</Text>
+                        </View>
                         <View style={styles.sentenceLW}>
-                          <Text style={{ color: '#000', fontWeight: '700' }}>{longwen.FULLFORM}</Text>
-                          <Text style={{ color: '#000' }}>{longwen.DEF}{longwen.TRAN}</Text>
+                          <Text style={{ color: '#000', fontWeight: '700' }}>{longwenSense.FULLFORM}</Text>
+                          <Text style={{ color: '#000' }}>{longwenSense.DEF}{longwenSense.TRAN}</Text>
                           <View style={styles.small}>
-                            <Text style={styles.greyFont}>{longwen.EXAMPLE}</Text>
-                            <Text style={styles.greyFont}>{longwen.EXAMPLETRAN}</Text>
+                            <Text style={styles.greyFont}>{longwenSense.EXAMPLE}</Text>
+                            <Text style={styles.greyFont}>{longwenSense.EXAMPLETRAN}</Text>
                           </View>
                         </View>
                       </View>
@@ -129,7 +144,7 @@ class wordCard extends Component {
                     {i == '柯林斯' && !!collins.collins_entries[0] &&
                       <View style={styles.langwenBox}>
                         <View style={styles.wordKLS}>
-                          <Text style={{color: '#BE3030'}}>{collins.collins_entries[0].headword}</Text>
+                          <Text style={{ color: '#BE3030', fontSize: 18, marginRight: 10 }}>{collins.collins_entries[0].headword}</Text>
                           <Text>/{collins.collins_entries[0].phonetic}/</Text>
                         </View>
                         <View style={styles.sentenceKSL}>
@@ -147,7 +162,7 @@ class wordCard extends Component {
             })}
           </ScrollableTabView>
         </View>
-      </View>
+      </ScrollView>
     );
   }
 }
@@ -158,7 +173,7 @@ const styles = StyleSheet.create({
     marginTop: 20,
   },
   word: {
-    fontSize: 24,
+    fontSize: 34,
     color: '#000',
   },
   yinbiao: {
@@ -171,7 +186,8 @@ const styles = StyleSheet.create({
     width: MainWidth * 0.3
   },
   scrollBox: {
-    height: 800,
+    // height: 800,
+    // flex:1,
     marginTop: 100
   },
   ecs: {
@@ -206,8 +222,20 @@ const styles = StyleSheet.create({
     paddingHorizontal: 20,
   },
   greyFont: {
-    color: '#ccc', 
+    color: '#ccc',
     fontSize: 12
+  },
+  wordKLS: {
+    flexDirection: 'row',
+    alignItems: 'flex-end',
+  },
+  sentenceKSL: {
+    marginTop: 25,
+    width: MainWidth * 0.7
+  },
+  explainKSL: {
+    width: MainWidth * 0.4,
+    marginTop: 25
   }
 })
 export default wordCard;
