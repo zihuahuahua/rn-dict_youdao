@@ -1,10 +1,9 @@
 import axios from 'axios';
-// import {Toast} from 'antd-mobile'
 import api from '../config/config'
 // console.log(api,'apiBaseUrl')
 const APIUtils = {
   base: api.apiBaseUrl,
-  jsonBaseUrl: api.jsonBaseUrl,
+  transBaseUrl: api.transBaseUrl,
   XML2jsobj: function (node) {
     var data = {};
 
@@ -62,7 +61,7 @@ const APIUtils = {
       params = {}
     }
     return axios({
-      url: APIUtils.base + url,
+      url: url == '/translate' ? APIUtils.transBaseUrl + url : APIUtils.base + url,
       method: 'post',
       data: params,
       timeout: 6000,

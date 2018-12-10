@@ -1,4 +1,5 @@
-import apiUtils from './apiUtils'
+import apiUtils from './apiUtils' // 查询
+import apiTrans from './apiUtils' // 翻译
 
 /**
  * egGet
@@ -6,10 +7,6 @@ import apiUtils from './apiUtils'
  * @returns {*|Promise.<TResult>}
  */
 
-
-export const egGet = (rid) => {
-    return apiUtils.commonGet(``, 'noLoad')
-}
 // 词汇联想
 export const getWords = params => {
     return apiUtils.commonGet('/suggest', params,'noLoad')
@@ -17,4 +14,9 @@ export const getWords = params => {
 // 词汇详情
 export const getWordDetail = params => {
     return apiUtils.commonGet('/jsonapi', params,'noLoad')
+}
+
+// 翻译
+export const getTanslate = params => {
+    return apiTrans.commonPost('/translate', params,'noLoad')
 }

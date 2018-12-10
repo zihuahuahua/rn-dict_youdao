@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { Dimensions, View, Text, StyleSheet, Image,ScrollView } from 'react-native';
+import { Dimensions, View, Text, StyleSheet, Image, ScrollView } from 'react-native';
 
 import ScrollableTabView from 'react-native-scrollable-tab-view';
 import TabBar from 'react-native-underline-tabbar';
@@ -44,7 +44,7 @@ class wordCard extends Component {
       var KSL = collins.collins_entries[0].entries.entry[0].tran_entry[0]
     }
     return (
-      <ScrollView>
+      <ScrollView >
         <View style={styles.top}>
           <View style={{ width: MainWidth * 0.6 }}>
             <Text style={styles.word}>{simple.query}</Text>
