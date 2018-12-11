@@ -2,12 +2,12 @@ import React, { Component } from 'react';
 import { createStackNavigator, createAppContainer } from "react-navigation";
 import { AppRegistry } from 'react-native';
 // 页面
-import Search from '../pages/search'
+import Home from '../pages/home'
 import Test from '../pages/test'
 const AppNavigator = createStackNavigator(
   {
     Test: Test,
-    Search: Search,
+    Home: Home,
   }, {
     defaultNavigationOptions: {
       header: null

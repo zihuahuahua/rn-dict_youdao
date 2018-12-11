@@ -1,42 +1,43 @@
 import React, { Component } from 'react';
-import { Dimensions, View, Text, StyleSheet, Image, ScrollView } from 'react-native';
-import DropdownMenu from 'react-native-dropdown-menu';
-export default class Demo extends Component {
 
-  constructor(props) {
-    super(props);
-    this.state = {
-      text: ''
-    };
-  }
+import { View, Text } from 'react-native';
+import Menu, { MenuItem, MenuDivider } from 'react-native-material-menu';
+
+class index extends Component {
+  _menu = null;
+
+  setMenuRef = ref => {
+    this._menu = ref;
+  };
+
+  hideMenu = () => {
+    this._menu.hide();
+  };
+
+  showMenu = () => {
+    console.log(this._menu.show,'fn')
+    this._menu.show();
+  };
 
   render() {
-    var data = [["C", "Java", "JavaScript", "PHP"]];
     return (
-      <View style={{ flex: 1 }}>
-        <DropdownMenu
-          style={{ flex: 1 }}
-          bgColor={'white'}
-          tintColor={'#666666'}
-          activityTintColor={'green'}
-          // arrowImg={}      
-          // checkImage={}   
-          // optionTextStyle={{color: '#333333'}}
-          // titleStyle={{color: '#333333'}} 
-          // maxHeight={300} 
-          handler={(selection, row) => this.setState({ text: data[selection][row] })}
-          data={data}
+      <View style={{ flex: 1, alignItems: 'center', justifyContent: 'center' }}>
+        <Menu
+          ref={this.setMenuRef}
+          button={<Text onPress={this.showMenu}>Show menu</Text>}
         >
-
-          <View style={{ flex: 1 }}>
-            <Text>
-              {this.state.text} is the best language in the world
-            </Text>
-          </View>
-
-        </DropdownMenu>
+          <MenuItem onPress={this.hideMenu}>Menu item 1</MenuItem>
+          <MenuItem onPress={this.hideMenu}>Menu item 2</MenuItem>
+          <MenuItem onPress={this.hideMenu} disabled>
+            Menu item 3
+          </MenuItem>
+          <MenuDivider />
+          <MenuItem onPress={this.hideMenu}>Menu item 4</MenuItem>
+        </Menu>
       </View>
     );
   }
-
 }
+
+
+export default index;
