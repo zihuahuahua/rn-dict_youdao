@@ -1,49 +1,49 @@
-import React, { Component } from 'react';
-import {
-  AppRegistry,
-  View,
-  Text,
-  SectionList,
-} from 'react-native';
+/* tslint:disable:no-console */
+import React from 'react';
+import { ScrollView } from 'react-native';
+import { List, TextareaItem } from 'antd-mobile-rn';
 
-export default class index extends React.Component {
-
+export default class BasicTextAreaItemExample extends React.Component {
   constructor(props) {
     super(props);
+    this.state = {
+      val: '默认带value',
+    };
   }
 
-  _renderItem = (info) => {
-    var txt = '  ' + info.item.title;
-    return <Text
-      style={{ height: 60, textAlignVertical: 'center', backgroundColor: "#ffffff", color: '#5C5C5C', fontSize: 15 }}>{txt}</Text>
-  }
-
-  _sectionComp = (info) => {
-    var txt = info.section.key;
-    return <Text
-      style={{ height: 50, textAlign: 'center', textAlignVertical: 'center', backgroundColor: '#9CEBBC', color: 'white', fontSize: 30 }}>{txt}</Text>
+  onChange = (val) => {
+    // console.log(val);
+    this.setState({ val });
   }
 
   render() {
-    var sections = [
-      { key: "A", data: [{ title: "阿童木" }, { title: "阿玛尼" }, { title: "爱多多" }] },
-      { key: "B", data: [{ title: "表哥" }, { title: "贝贝" }, { title: "表弟" }, { title: "表姐" }, { title: "表叔" }] },
-      { key: "C", data: [{ title: "成吉思汗" }, { title: "超市快递" }] },
-      { key: "W", data: [{ title: "王磊" }, { title: "王者荣耀" }, { title: "往事不能回味" }, { title: "王小磊" }, { title: "王中磊" }, { title: "王大磊" }] },
-    ];
-
     return (
-      <View style={{ flex: 1 }}>
-        <SectionList
-          renderSectionHeader={this._sectionComp}
-          renderItem={this._renderItem}
-          sections={sections}
-          ItemSeparatorComponent={() => <View><Text></Text></View>}
-          ListHeaderComponent={() => <View style={{ backgroundColor: '#25B960', alignItems: 'center', height: 30 }}><Text style={{ fontSize: 18, color: '#ffffff' }}>通讯录</Text></View>}
-          ListFooterComponent={() => <View style={{ backgroundColor: '#25B960', alignItems: 'center', height: 30 }}><Text style={{ fontSize: 18, color: '#ffffff' }}>通讯录尾部</Text></View>}
-        />
-      </View>
+      <ScrollView
+        style={{ flex: 1 }}
+        automaticallyAdjustContentInsets={false}
+        showsHorizontalScrollIndicator={false}
+        showsVerticalScrollIndicator={false}
+      >
+        <List renderHeader={'基本'}>
+          <TextareaItem rows={4} placeholder="固定行数" />
+
+          <TextareaItem rows={4} placeholder="多行带计数" count={100} />
+
+          <TextareaItem rows={4} placeholder="高度自适应" autoHeight style={{ paddingVertical: 5 }} />
+
+          <TextareaItem value={this.state.val} onChange={this.onChange} />
+
+          <TextareaItem value="不可编辑 editable = {false}" editable={false} />
+
+          <TextareaItem clear={false} placeholder="不显示清除按钮" />
+
+          <TextareaItem
+            error
+            defaultValue="报错样式 error={true}"
+            onErrorClick={() => console.log('err')}
+          />
+        </List>
+      </ScrollView>
     );
   }
-
 }

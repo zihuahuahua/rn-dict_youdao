@@ -17,6 +17,6 @@ export const getWordDetail = params => {
 }
 
 // 翻译
-export const getTanslate = params => {
+export const getTranslate = params => {
     return apiTrans.commonPost('/translate', params,'noLoad')
 }

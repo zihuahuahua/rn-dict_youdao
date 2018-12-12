@@ -1,5 +1,5 @@
 export {
     getWords,
     getWordDetail,
-    translate
+    getTranslate
 } from './serverApi'

@@ -96,7 +96,7 @@ class search extends Component {
       showDelete: true,
       value: val
     })
-    if (val !== '') {
+    if (val.trim() !== '') {
       this.setState({
         showList: true
       })
