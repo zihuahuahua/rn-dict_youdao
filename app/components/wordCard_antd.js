@@ -75,7 +75,6 @@ class wordCard extends Component {
             tabBarActiveTextColor='rgba(0,0,0,1)'
             tabBarInactiveTextColor='rgba(0,0,0,0.6)'
             onChange={(tab, index) => console.log(tab, index, 'tab===')}
-
           >
             <View style={styles.tabCon}>
               <View style={styles.ecs}>

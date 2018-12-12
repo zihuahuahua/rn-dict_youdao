@@ -6,8 +6,8 @@ import Home from '../pages/home'
 import Test from '../pages/test'
 const AppNavigator = createStackNavigator(
   {
-    Test: Test,
     Home: Home,
+    Test: Test,
   }, {
     defaultNavigationOptions: {
       header: null

@@ -1,17 +1,11 @@
 import React, { Component } from 'react';
-import { Dimensions, View, Text, TextInput, StyleSheet, Image, ScrollView, FlatList, TouchableHighlight } from 'react-native';
-import { TabBar } from 'antd-mobile-rn';
+import { Dimensions, View, Text, TextInput, StyleSheet, Image, FlatList, TouchableHighlight } from 'react-native';
 
-// import Header from '../../components/header'
-import WordCard from '../../components/wordCard_antd';
-import Search from '../../components/search'
-import Translate from '../../components/translate'
-
-import { getWords, getWordDetail } from '../../api/API';
+import WordCard from './wordCard_antd';
+import { getWords, getWordDetail } from '../api/API';
 
 const MainWidth = Dimensions.get('window').width;
-
-class index extends Component {
+class search extends Component {
   constructor(props) {
     super(props)
     this.state = {
@@ -24,15 +18,6 @@ class index extends Component {
       notFound: false,
       wordDetail: []
     }
-  }
-
-  componentDidMount() {
-  }
-
-  onChangeTab(tabName) {
-    this.setState({
-      selectedTab: tabName,
-    });
   }
 
   // 输入单词联想
@@ -123,35 +108,51 @@ class index extends Component {
     }
   }
   render() {
+    const { dataSource, showList, notFound, wordDetail, showDetail, value, showDelete } = this.state
     return (
-      <TabBar
-        tintColor="#BE3030"
-        unselectedTintColor="#707070"
-      >
-        <TabBar.Item
-          title="词典"
-          icon={require('../../images/tabbar/search_ant.png')}
-          selectedIcon={require('../../images/tabbar/search.png')}
-          selected={this.state.selectedTab === 'search'}
-          onPress={() => this.onChangeTab('search')}
-        >
-          {this.state.selectedTab === 'search' &&
-            <Search/>
+      <View style={styles.container}>
+        <View style={styles.searchBox}>
+          <View style={{ flexDirection: 'row', alignItems: 'center' }}>
+            <TouchableHighlight onPress={this.goback}>
+              <Image source={require('../images/back.png')} style={styles.goBack}></Image>
+            </TouchableHighlight>
+            <TextInput
+              placeholder='在此输入单词或句子'
+              style={styles.searchInput}
+              onChangeText={(value) => this.changeTxt(value)}
+              placeholderTextColor={'#9c9c9c'}
+              value={value}
+              onFocus={this.focusInput.bind(this)}
+            />
+          </View>
+          <TouchableHighlight onPress={this.deleteText.bind(this)} underlayColor={'rgba(0,0,0,0)'}>
+            <View>
+              {showDelete &&
+                <Image source={require('../images/delete.png')} style={styles.deleteBtn}></Image>
+              }
+            </View>
+          </TouchableHighlight>
+        </View>
+        <View style={styles.associate}>
+          {dataSource && dataSource.length !== 0 && showList &&
+            <View style={styles.listView}>
+              {notFound && <View style={{ height: 80, justifyContent: 'center' }}><Text style={{ textAlign: 'center' }}> 暂无此词~ </Text></View>}
+              {!notFound && <FlatList
+                data={dataSource}
+                renderItem={this.renderItem}
+                ItemSeparatorComponent={() => (<View style={{ alignItems: 'center' }}><View style={{ height: 2, width: MainWidth * 0.84, backgroundColor: 'rgba(238,238,238,0.4)' }}></View></View>)}
+              />}
+            </View>
           }
-        </TabBar.Item>
-        <TabBar.Item
-          title="翻译"
-          icon={require('../../images/tabbar/trans_ant.png')}
-          selectedIcon={require('../../images/tabbar/trans.png')}
-          selected={this.state.selectedTab === 'trans'}
-          onPress={() => this.onChangeTab('trans')}
-        >
-        {this.state.selectedTab === 'trans' &&
-          <Translate/>
+        </View>
+        {wordDetail.length !== 0 && showDetail &&
+          <View style={styles.detailBox}>
+            <View>
+              <WordCard item={wordDetail} />
+            </View>
+          </View>
         }
-        </TabBar.Item>
-      </TabBar>
-
+      </View>
     );
   }
 }
@@ -223,5 +224,4 @@ const styles = StyleSheet.create({
     // width: MainWidth * 0.9
   }
 })
-
-export default index;
+export default search;
