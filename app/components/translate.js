@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { View, Text, StyleSheet, Image } from 'react-native'
+import { View, Text, StyleSheet, Image, FlatList } from 'react-native'
 import Drawer from 'react-native-drawer'
 import { Button, InputItem, List, TextareaItem } from 'antd-mobile-rn';
 // import { BoxShadow } from 'react-native-shadow'
@@ -16,7 +16,8 @@ export default class translate extends Component {
       lang2: '英文',
       value: '',
       trans: null,
-      showTrans: false
+      showTrans: false,
+      chooseItem: 0
     }
   }
 
@@ -24,11 +25,14 @@ export default class translate extends Component {
   drawerContent = (
     <View style={{ flex: 1, backgroundColor: 'red' }}><Text onPress={() => { this.closeControlPanel() }} style={{ fontSize: 100 }}>抽屉的内容</Text></View>
   )
-  closeControlPanel = () => {
+  chooseLanguage = () => {
+    console.log(this.state.chooseItem,'item===')
     this._drawer.close()
   };
-  openControlPanel = () => {
-    console.log('open', this._drawer)
+  openControlPanel = (num) => {
+    this.setState({
+      chooseItem: num
+    })
     this._drawer.open()
   };
   exchangeLg = () => {
@@ -80,7 +84,7 @@ export default class translate extends Component {
     let params = {
       doctype: 'json',
     }
-    const { type } = this.state
+    const { type } = this.state 
     const res = await getTranslate({ ...params, i: value, type: type });
     if (res.data.errorCode == 0) {
       if (!!res.data.translateResult[0][0]) {
@@ -121,6 +125,7 @@ export default class translate extends Component {
     //   y: 3,
     //   style: { marginVertical: 5 }
     // }
+    const listData = ['中文', '英文', '日文', '韩文']
     return (
       <View style={{ flex: 1, padding: 20, paddingBottom: 0 }}>
         <View style={styles.menuBox}>
@@ -129,19 +134,27 @@ export default class translate extends Component {
             open={false}//默认是否打开抽屉
             tapToClose={true}//点击内容处 会关闭抽屉
             type='overlay' //抽屉出现的方式：overlay：抽屉覆盖内容 static:抽屉一只在内容后面 打开的时内容会滑动，displace：不会覆盖的 进出
-            openDrawerOffset={0.6} // 抽屉占整个屏幕的百分比（1-0.6=0.4）
+            openDrawerOffset={0.8} // 抽屉占整个屏幕的百分比
             closedDrawerOffset={0}//关闭抽屉后 抽屉在屏幕中的显示比例
             styles={styles.drawer}//抽屉样式，背景色 透明度，阴影啥的
             ref={(ref) => this._drawer = ref}
             content={
-              <View style={{ backgroundColor: 'red' }}><Text onPress={() => { this.closeControlPanel() }} style={{ fontSize: 100 }}>抽屉的内容</Text></View>
+              <View>
+                {listData.map((i, v) => {
+                  return (
+                    <View key={i} style={styles.itemBox}>
+                      <Text onPress={() => { this.chooseLanguage() }} style={styles.langItem}>{i}</Text>
+                    </View>
+                  )
+                })}
+              </View>
             }
           >
             <View style={{}}>
               <View style={styles.flexBox}>
-                <Text onPress={() => { this.openControlPanel() }}>{lang1}</Text>
+                <Text onPress={() => { this.openControlPanel(1) }}>{lang1}</Text>
                 <Text onPress={() => { this.exchangeLg() }}>⇆</Text>
-                <Text onPress={() => { this.openControlPanel() }}>{lang2}</Text>
+                <Text onPress={() => { this.openControlPanel(2) }}>{lang2}</Text>
               </View>
             </View>
             {/* <BoxShadow setting={shadowOpt}> */}
@@ -192,6 +205,17 @@ const styles = StyleSheet.create({
     paddingVertical: 10,
     paddingHorizontal: 12,
     fontSize: 18
+  },
+  itemBox:{
+    height: 40,
+    paddingHorizontal: 80,
+    justifyContent:'center',
+    borderColor: '#333',
+    borderBottomWidth: 1,
+  },
+  langItem: {
+    fontSize: 16,
+    textAlign: 'center',
   },
   drawer: {
     flex: 1,
