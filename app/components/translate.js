@@ -25,8 +25,22 @@ export default class translate extends Component {
   drawerContent = (
     <View style={{ flex: 1, backgroundColor: 'red' }}><Text onPress={() => { this.closeControlPanel() }} style={{ fontSize: 100 }}>抽屉的内容</Text></View>
   )
-  chooseLanguage = () => {
-    console.log(this.state.chooseItem,'item===')
+  chooseLanguage = (i) => {
+    const chooseItem = this.state.chooseItem
+    switch (chooseItem) {
+      case 1:
+        this.setState({
+          lang1: i
+        }, () => this.getLangType())
+        break;
+      case 2:
+        this.setState({
+          lang2: i
+        }, () => this.getLangType())
+        break;
+      default:
+        break;
+    }
     this._drawer.close()
   };
   openControlPanel = (num) => {
@@ -43,37 +57,45 @@ export default class translate extends Component {
       lang2: l1
     })
   }
-  getLangType = (lang1, lang2) => {
+  getLangType = () => {
+    const _this = this
+    const value = this.state.value
+    function callback() {
+      if(value.trim()!== ''){
+        _this.getTranslate(value)
+      }
+    }
+    const { lang1, lang2 } = this.state
     switch (lang1, lang2) {
       case '英文', '中文':
         this.setState({
           type: 'EN2ZH_CN'
-        })
+        },()=>callback())
         break;
       case '中文', '英文':
         this.setState({
           type: 'ZH_CN2EN'
-        })
+        },()=>callback())
         break;
       case '日文', '中文':
         this.setState({
           type: 'JA2ZH_CN'
-        })
+        },()=>callback())
         break;
       case '中文', '日文':
         this.setState({
           type: 'ZH_CN2JA'
-        })
+        },()=>callback())
         break;
       case '韩文', '中文':
         this.setState({
           type: 'KR2ZH_CN'
-        })
+        },()=>callback())
         break;
       case '中文', '韩文':
         this.setState({
           type: 'ZH_CN2KR'
-        })
+        },()=>callback())
         break;
       default:
         break;
@@ -84,7 +106,8 @@ export default class translate extends Component {
     let params = {
       doctype: 'json',
     }
-    const { type } = this.state 
+    const { type } = this.state
+    console.log(type, 'type==')
     const res = await getTranslate({ ...params, i: value, type: type });
     if (res.data.errorCode == 0) {
       if (!!res.data.translateResult[0][0]) {
@@ -143,7 +166,7 @@ export default class translate extends Component {
                 {listData.map((i, v) => {
                   return (
                     <View key={i} style={styles.itemBox}>
-                      <Text onPress={() => { this.chooseLanguage() }} style={styles.langItem}>{i}</Text>
+                      <Text onPress={() => { this.chooseLanguage(i) }} style={styles.langItem}>{i}</Text>
                     </View>
                   )
                 })}
@@ -206,10 +229,10 @@ const styles = StyleSheet.create({
     paddingHorizontal: 12,
     fontSize: 18
   },
-  itemBox:{
+  itemBox: {
     height: 40,
     paddingHorizontal: 80,
-    justifyContent:'center',
+    justifyContent: 'center',
     borderColor: '#333',
     borderBottomWidth: 1,
   },
